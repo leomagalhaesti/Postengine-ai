@@ -1,0 +1,437 @@
+{
+  "name": "Automatizar posts no LinkedIn com IA",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 15
+            }
+          ]
+        }
+      },
+      "id": "bb953ee3-09ab-485a-87a6-0d7cd98aa0c3",
+      "name": "Todo dia às 15h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "operation": "getAll",
+        "dataSourceId": {
+          "__rl": true,
+          "value": "c33277df-5718-407e-8ce8-a857f61959d4",
+          "mode": "id"
+        },
+        "limit": 30,
+        "options": {
+          "sort": {
+            "sortValue": [
+              {
+                "timestamp": true,
+                "key": "created_time",
+                "direction": "descending"
+              }
+            ]
+          }
+        }
+      },
+      "id": "b7e2f41c-afe4-4556-9235-b6b2e0376bb9",
+      "name": "Buscar temas já publicados",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        272,
+        128
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "W9NpFjgKRWoDhDLX",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "area",
+              "name": "area",
+              "type": "string",
+              "value": "={{ [\"Desenvolvimento Fullstack\", \"Cibersegurança\", \"Suporte de TI\"][$today.ordinal % 3] }}"
+            },
+            {
+              "id": "temasAnteriores",
+              "name": "temasAnteriores",
+              "type": "string",
+              "value": "={{ $input.all().map(i => i.json.name || i.json.property_name || \"\").filter(t => t && String(t).trim()).map(t => \"- \" + t).join(\"\\n\") || \"(nenhum ainda)\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e4958e02-0a65-4329-a98b-ce80c3f10574",
+      "name": "Definir área e temas anteriores",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        128
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini",
+          "cachedResultName": "GPT-5-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Área do post de hoje: {{ $json.area }}\n\nTemas que já publiquei (NÃO repita nenhum deles nem algo muito parecido):\n{{ $json.temasAnteriores }}\n\nEscolha um tema novo e relevante dentro dessa área e escreva o post de hoje."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "instructions": "Você escreve posts de LinkedIn em português do Brasil para Leonardo Magalhães, profissional de tecnologia que atua como Desenvolvedor Fullstack, com Cibersegurança e Suporte de TI. Cada post deve ser sobre UM tema prático da área indicada (ex.: boas práticas de código, frameworks, APIs, bancos de dados, segurança de aplicações, phishing, senhas e MFA, LGPD, hardening, backup, troubleshooting, atendimento ao usuário, produtividade em TI). Escreva em primeira pessoa, tom profissional e acessível, compartilhando dicas ou aprendizados úteis. Estrutura: um gancho forte na primeira linha, parágrafos curtos com quebras de linha, uma lista curta de dicas quando fizer sentido, e termine com uma pergunta para engajar e 3 a 5 hashtags relevantes. Entre 600 e 1500 caracteres. Não invente números, estatísticas, empresas ou experiências específicas. Sem markdown (sem ** nem títulos com #). Responda no formato JSON pedido: titulo = tema curto do post (até 80 caracteres); post = texto completo do post; busca_imagem = 2 a 4 palavras EM INGLÊS para buscar uma foto de banco de imagens que ilustre o tema (ex.: cybersecurity laptop, software developer coding, it support helpdesk), sem nomes de marcas.",
+          "maxTokens": 4000,
+          "reasoning": {
+            "reasoningOptions": {
+              "effort": "low",
+              "summary": "none"
+            }
+          },
+          "textFormat": {
+            "textOptions": {
+              "type": "json_schema",
+              "name": "post_linkedin",
+              "schema": "{\"type\":\"object\",\"properties\":{\"titulo\":{\"type\":\"string\"},\"post\":{\"type\":\"string\"},\"busca_imagem\":{\"type\":\"string\"}},\"required\":[\"titulo\",\"post\",\"busca_imagem\"],\"additionalProperties\":false}",
+              "strict": true
+            }
+          }
+        }
+      },
+      "id": "1d4c9301-0b9c-4260-9a71-b9f372d0312d",
+      "name": "Escrever post com IA",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1168,
+        128
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.unsplash.com/search/photos",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.output.find(o => o.type === \"message\").content.find(c => c.type === \"output_text\").text.busca_imagem }}"
+            },
+            {
+              "name": "per_page",
+              "value": "10"
+            },
+            {
+              "name": "orientation",
+              "value": "landscape"
+            },
+            {
+              "name": "content_filter",
+              "value": "high"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c249f144-0d01-4014-88d4-ee311dc19085",
+      "name": "Buscar foto no Unsplash",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1024,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fotoUrl",
+              "name": "fotoUrl",
+              "type": "string",
+              "value": "={{ $json.results[$today.ordinal % $json.results.length].urls.regular }}"
+            },
+            {
+              "id": "fotografo",
+              "name": "fotografo",
+              "type": "string",
+              "value": "={{ $json.results[$today.ordinal % $json.results.length].user.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "36fcfef1-1592-49e8-a9af-d08138e44942",
+      "name": "Escolher foto",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1248,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.fotoUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "44f66c41-9f7e-4286-b5b0-c16309d57953",
+      "name": "Baixar foto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1248,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "person": "So2kAAN41M",
+        "text": "={{ $(\"Escrever post com IA\").first().json.output.find(o => o.type === \"message\").content.find(c => c.type === \"output_text\").text.post }}\n\nFoto: {{ $(\"Escolher foto\").first().json.fotografo }} no Unsplash",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {
+          "title": "={{ $(\"Escrever post com IA\").first().json.output.find(o => o.type === \"message\").content.find(c => c.type === \"output_text\").text.titulo }}",
+          "visibility": "PUBLIC"
+        }
+      },
+      "id": "b79c31ab-1f85-4819-b487-69f6aa61ec0d",
+      "name": "Publicar no LinkedIn",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        288
+      ],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "RI1xypbLHZiuuuIq",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "value": "c33277df-5718-407e-8ce8-a857f61959d4",
+          "mode": "id"
+        },
+        "title": "={{ $(\"Escrever post com IA\").first().json.output.find(o => o.type === \"message\").content.find(c => c.type === \"output_text\").text.titulo }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Date|date",
+              "type": "date",
+              "includeTime": false,
+              "date": "={{ $today.toFormat(\"yyyy-MM-dd\") }}"
+            },
+            {
+              "key": "Status|status",
+              "type": "status",
+              "statusValue": "Concluído"
+            }
+          ]
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "textContent": "={{ $(\"Escrever post com IA\").first().json.output.find(o => o.type === \"message\").content.find(c => c.type === \"output_text\").text.post.slice(0, 1990) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "95320f44-965f-4246-8c8c-d5cb61dc1382",
+      "name": "Registrar post no Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        1264,
+        320
+      ],
+      "credentials": {
+        "notionOAuth2Api": {
+          "id": "W9NpFjgKRWoDhDLX",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Todo dia às 15h": {
+      "main": [
+        [
+          {
+            "node": "Buscar temas já publicados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar temas já publicados": {
+      "main": [
+        [
+          {
+            "node": "Definir área e temas anteriores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Definir área e temas anteriores": {
+      "main": [
+        [
+          {
+            "node": "Escrever post com IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escrever post com IA": {
+      "main": [
+        [
+          {
+            "node": "Buscar foto no Unsplash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar foto no Unsplash": {
+      "main": [
+        [
+          {
+            "node": "Escolher foto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escolher foto": {
+      "main": [
+        [
+          {
+            "node": "Baixar foto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar foto": {
+      "main": [
+        [
+          {
+            "node": "Publicar no LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar no LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Registrar post no Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b2a8b1fe-803b-4afd-9456-f8c60a02f25f",
+  "meta": {
+    "instanceId": "4c31ba03036c5f4e31c04d0f54746897f7e2e4e55da9225da700dfaabaa701c7"
+  },
+  "nodeGroups": [
+    {
+      "id": "eb2fe67f-4519-466e-b7a1-3b022100c7a1",
+      "name": "Escolher tema do dia",
+      "nodeIds": [
+        "b7e2f41c-afe4-4556-9235-b6b2e0376bb9",
+        "e4958e02-0a65-4329-a98b-ce80c3f10574"
+      ],
+      "description": "Alterna a área a cada dia e lista os temas já publicados no Notion para evitar repetição"
+    },
+    {
+      "id": "31cda1ab-5b78-402f-9e4c-c02bc60d8b25",
+      "name": "Criar post com imagem",
+      "nodeIds": [
+        "1d4c9301-0b9c-4260-9a71-b9f372d0312d",
+        "c249f144-0d01-4014-88d4-ee311dc19085",
+        "36fcfef1-1592-49e8-a9af-d08138e44942",
+        "44f66c41-9f7e-4286-b5b0-c16309d57953"
+      ],
+      "description": "A IA escreve o texto e sugere um termo de busca; uma foto gratuita do Unsplash é escolhida e baixada"
+    },
+    {
+      "id": "a9c8b28b-016c-4ac5-b43c-76032e83dfe5",
+      "name": "Publicar e registrar",
+      "nodeIds": [
+        "b79c31ab-1f85-4819-b487-69f6aa61ec0d",
+        "95320f44-965f-4246-8c8c-d5cb61dc1382"
+      ],
+      "description": "Publica texto e foto no seu perfil do LinkedIn e salva o tema e o texto no Notion"
+    }
+  ],
+  "id": "UsJVgohKAVL5SY5h",
+  "tags": []
+}
