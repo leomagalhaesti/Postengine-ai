@@ -10,22 +10,22 @@
 
 ## 🇧🇷 PORTUGUÊS
 
-Uma arquitetura de automacao end-to-end desenvolvida no n8n para criacao, validacao, busca de midia e publicacao autonoma de conteudos no LinkedIn duas vezes por dia, integrando Inteligencia Artificial (Google Gemini), busca automatica de imagens (Pixabay API) e registro de historico via Notion.
+Uma arquitetura de automacao end-to-end desenvolvida no n8n para criacao, validacao, busca de midia e publicacao autonoma de conteudos diarios no LinkedIn, integrando Inteligencia Artificial (Google Gemini), busca automatica de imagens (Pixabay API) e registro de historico via Notion.
 
 📌 Visao Geral do Projeto
 Este projeto resolve o desafio de manter consistencia de publicacao no LinkedIn sem a necessidade de alimentacao manual diaria.
 
-A partir de um agendamento (Schedule Trigger, 09h e 22h), o workflow consulta no Notion os temas ja publicados, sorteia area, formato e tom do post, gera o texto com o Gemini, valida e limpa a resposta, busca fotos do tema na API do Pixabay, escolhe uma foto que ainda nao foi usada, realiza o download binario do arquivo em memoria e publica o post unificado diretamente no feed do LinkedIn. Por fim, grava o historico interno e registra o post no Notion.
+A partir de um agendamento diario (Schedule Trigger, 09h), o workflow consulta no Notion os temas ja publicados, sorteia area, formato e tom do post, gera o texto com o Gemini, valida e limpa a resposta, busca fotos do tema na API do Pixabay, escolhe uma foto que ainda nao foi usada, realiza o download binario do arquivo em memoria e publica o post unificado diretamente no feed do LinkedIn. Por fim, grava o historico interno e registra o post no Notion.
 
 📐 Arquitetura da Solucao
 
-[ Schedule Trigger ] ──► (Execucao as 09h e 22h / Cron 24/7 na VPS)
+[ Schedule Trigger ] ──► (Execucao diaria as 09h / Cron 24/7 na VPS)
          │
          ▼
 [ Notion Database ] ──► (Le os temas ja publicados para evitar repeticao)
          │
          ▼
-[ Code: tema do dia ] ──► (Sorteia area, formato, tom e gancho; manha = dicas, noite = reflexoes)
+[ Code: tema do dia ] ──► (Sorteia area, formato, tom e gancho; alterna dicas e reflexoes a cada dia)
          │
          ▼
 [ Google Gemini Flash ] ──► (Engenharia de prompt com saida estruturada TITULO / BUSCA / POST)
@@ -73,22 +73,22 @@ Nenhuma chave fica no JSON: o arquivo guarda apenas o nome e o ID das credenciai
 
 ## 🇺🇸 ENGLISH
 
-An end-to-end automation architecture built with n8n for autonomous creation, validation, media retrieval, and twice-daily publishing of content to LinkedIn, integrating Artificial Intelligence (Google Gemini), automated image retrieval (Pixabay API), and history tracking via Notion.
+An end-to-end automation architecture built with n8n for autonomous creation, validation, media retrieval, and daily publishing of content to LinkedIn, integrating Artificial Intelligence (Google Gemini), automated image retrieval (Pixabay API), and history tracking via Notion.
 
 📌 Project Overview
 This project solves the challenge of maintaining consistent publication activity on LinkedIn without requiring daily manual input.
 
-Triggered by a schedule (Schedule Trigger, 9 AM and 10 PM), the workflow reads previously published topics from Notion, draws the post's area, format and tone, generates the copy with Gemini, validates and cleans the response, fetches matching photos from the Pixabay API, picks one that has not been used before, downloads the raw binary file into memory, and publishes the unified post directly to the LinkedIn feed. Finally, it stores its internal history and logs the post in Notion.
+Triggered by a daily schedule (Schedule Trigger, 9 AM), the workflow reads previously published topics from Notion, draws the post's area, format and tone, generates the copy with Gemini, validates and cleans the response, fetches matching photos from the Pixabay API, picks one that has not been used before, downloads the raw binary file into memory, and publishes the unified post directly to the LinkedIn feed. Finally, it stores its internal history and logs the post in Notion.
 
 📐 Solution Architecture
 
-[ Schedule Trigger ] ──► (Runs at 9 AM and 10 PM / 24/7 Cron on VPS)
+[ Schedule Trigger ] ──► (Runs daily at 9 AM / 24/7 Cron on VPS)
          │
          ▼
 [ Notion Database ] ──► (Reads published topics to avoid repetition)
          │
          ▼
-[ Code: daily topic ] ──► (Draws area, format, tone and hook; morning = tips, evening = reflections)
+[ Code: daily topic ] ──► (Draws area, format, tone and hook; alternates tips and reflections each day)
          │
          ▼
 [ Google Gemini Flash ] ──► (Prompt engineering with structured TITULO / BUSCA / POST output)
