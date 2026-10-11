@@ -3,7 +3,7 @@
   "nodes": [
     {
       "id": "d6a14154-5316-45aa-bd82-d2cc9b0caca2",
-      "name": "Agenda 09h",
+      "name": "Agenda 08h",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -14,7 +14,7 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 9
+              "triggerAtHour": 8
             }
           ]
         }
@@ -25,10 +25,11 @@
       "name": "Buscar temas já publicados",
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
+      "executeOnce": true,
       "alwaysOutputData": true,
       "onError": "continueRegularOutput",
       "position": [
-        1328,
+        1808,
         320
       ],
       "parameters": {
@@ -58,11 +59,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1568,
+        2048,
         320
       ],
       "parameters": {
-        "jsCode": "const sd = $getWorkflowStaticData('global');\nconst pick = (arr) => arr[Math.floor(Math.random() * arr.length)];\n\nconst categorias = [\n  { nome: 'Desenvolvimento web com React e TypeScript', imagens: ['code on dark monitor', 'javascript code screen', 'web developer laptop', 'programming workspace', 'colorful code editor', 'frontend developer desk'] },\n  { nome: 'Automação de processos com n8n e APIs', imagens: ['workflow diagram', 'automation gears', 'connected network nodes', 'data flow abstract', 'api integration', 'robot arm automation'] },\n  { nome: 'Inteligência Artificial aplicada ao desenvolvimento de software', imagens: ['artificial intelligence', 'processor chip', 'neural network abstract', 'robot and human', 'machine learning', 'futuristic technology'] },\n  { nome: 'Boas práticas de código e arquitetura de software', imagens: ['whiteboard planning', 'software architecture diagram', 'developer desk setup', 'code review team', 'blueprint plan', 'programming team'] },\n  { nome: 'Linux, Docker e infraestrutura para quem desenvolve', imagens: ['server room', 'data center', 'network cables', 'terminal screen', 'cloud computing', 'fiber optic'] },\n  { nome: 'Segurança para quem desenvolve software', imagens: ['padlock security', 'cyber security shield', 'password login', 'two factor authentication', 'encryption code', 'fingerprint scanner'] },\n  { nome: 'Carreira e produtividade em desenvolvimento de software', imagens: ['home office', 'notebook planner', 'team meeting', 'coffee desk', 'online learning', 'headphones work'] },\n];\n\nconst formatosManha = [\n  'dica rápida com lista curta de 3 a 5 itens',\n  'mito x verdade sobre o assunto',\n  'erro comum que as pessoas cometem e como evitar',\n  'mini passo a passo prático',\n  'checklist para o leitor aplicar hoje',\n];\nconst formatosNoite = [\n  'curiosidade surpreendente explicada de forma leve, sem números inventados',\n  'reflexão em primeira pessoa, sem inventar fatos específicos',\n  'explicação simples usando uma analogia do dia a dia',\n  'pergunta provocativa seguida da resposta',\n  'conversa direta com o leitor, como um conselho a um amigo',\n];\n// um post por dia: dias pares = dicas práticas, dias ímpares = reflexões\nconst manha = $now.ordinal % 2 === 0;\nconst tons = ['didático e calmo', 'descontraído e bem-humorado', 'direto e objetivo', 'curioso e entusiasmado', 'sério e alerta, sem causar pânico'];\nconst ganchos = ['uma pergunta curiosa', 'uma frase curta e inesperada', 'um erro comum', 'uma situação do cotidiano', 'uma afirmação que quebra um mito', 'um \"e se\" interessante'];\n\nconst ultimas = Array.isArray(sd.ultimasCategorias) ? sd.ultimasCategorias : [];\nlet candidatas = categorias.filter(c => !ultimas.includes(c.nome));\nif (!candidatas.length) candidatas = categorias;\nconst cat = pick(candidatas);\n\n// evita repetir formato e tipo de abertura dos últimos posts\nconst semRepetir = (lista, usados) => { const livres = lista.filter(x => !usados.includes(x)); return livres.length ? livres : lista; };\nconst ultimosFormatos = Array.isArray(sd.ultimosFormatos) ? sd.ultimosFormatos : ['pergunta provocativa seguida da resposta'];\nconst ultimosGanchos = Array.isArray(sd.ultimosGanchos) ? sd.ultimosGanchos : ['um \"e se\" interessante', 'uma pergunta curiosa'];\nconst aberturas = Array.isArray(sd.ultimasAberturas) ? sd.ultimasAberturas : ['E se aquela rede', 'E se a melhor'];\n\n// título de uma página do Notion, em qualquer formato de saída do nó\nconst tituloDe = (j) => {\n  if (!j) return '';\n  if (j.properties) {\n    for (const p of Object.values(j.properties)) {\n      if (p && p.type === 'title' && Array.isArray(p.title)) return p.title.map(t => t.plain_text || '').join('');\n    }\n  }\n  return j.name || j.Name || j.Nome || j.property_name || j.property_nome || j.title || '';\n};\n\nconst doNotion = $input.all().map(i => String(tituloDe(i.json)).trim()).filter(Boolean);\nconst memoria = Array.isArray(sd.temas) ? sd.temas : [];\nconst temas = [...new Set([...memoria, ...doNotion])].slice(0, 80);\n\nreturn [{\n  json: {\n    area: cat.nome,\n    formato: pick(semRepetir(manha ? formatosManha : formatosNoite, ultimosFormatos)),\n    tom: pick(tons),\n    gancho: pick(semRepetir(ganchos, ultimosGanchos)),\n    aberturasRecentes: aberturas.length ? aberturas.map(t => '- ' + t).join('\\n') : '(nenhuma ainda)',\n    dicaImagem: pick(cat.imagens),\n    temasAnteriores: temas.length ? temas.map(t => '- ' + t).join('\\n') : '(nenhum ainda)',\n  },\n}];"
+        "jsCode": "const sd = $getWorkflowStaticData('global');\nconst pick = (arr) => arr[Math.floor(Math.random() * arr.length)];\n\nconst categorias = [\n  { nome: 'Desenvolvimento web com React e TypeScript', imagens: ['code on dark monitor', 'javascript code screen', 'web developer laptop', 'programming workspace', 'colorful code editor', 'frontend developer desk'] },\n  { nome: 'Automação de processos com n8n e APIs', imagens: ['workflow diagram', 'automation gears', 'connected network nodes', 'data flow abstract', 'api integration', 'robot arm automation'] },\n  { nome: 'Inteligência Artificial aplicada ao desenvolvimento de software', imagens: ['artificial intelligence', 'processor chip', 'neural network abstract', 'robot and human', 'machine learning', 'futuristic technology'] },\n  { nome: 'Boas práticas de código e arquitetura de software', imagens: ['whiteboard planning', 'software architecture diagram', 'developer desk setup', 'code review team', 'blueprint plan', 'programming team'] },\n  { nome: 'Linux, Docker e infraestrutura para quem desenvolve', imagens: ['server room', 'data center', 'network cables', 'terminal screen', 'cloud computing', 'fiber optic'] },\n  { nome: 'Segurança para quem desenvolve software', imagens: ['padlock security', 'cyber security shield', 'password login', 'two factor authentication', 'encryption code', 'fingerprint scanner'] },\n  { nome: 'Carreira e produtividade em desenvolvimento de software', imagens: ['home office', 'notebook planner', 'team meeting', 'coffee desk', 'online learning', 'headphones work'] },\n];\n\nconst formatosManha = [\n  'dica rápida com lista curta de 3 a 5 itens',\n  'mito x verdade sobre o assunto',\n  'erro comum que as pessoas cometem e como evitar',\n  'mini passo a passo prático',\n  'checklist para o leitor aplicar hoje',\n];\nconst formatosNoite = [\n  'curiosidade surpreendente explicada de forma leve, sem números inventados',\n  'reflexão em primeira pessoa, sem inventar fatos específicos',\n  'explicação simples usando uma analogia do dia a dia',\n  'pergunta provocativa seguida da resposta',\n  'conversa direta com o leitor, como um conselho a um amigo',\n];\nconst formatosBastidor = [\n  'como uma parte específica do projeto funciona por dentro',\n  'uma decisão técnica do projeto e o motivo dela, conforme o material',\n  'o problema que o projeto resolve e o caminho escolhido para resolver',\n  'uma limitação assumida do projeto e por que ela existe, conforme o material',\n];\nconst formatosCarrossel = [\n  'passo a passo em etapas, uma etapa por slide',\n  'erros comuns e como evitar, um erro por slide',\n  'checklist prático, um item por slide',\n  'mitos e verdades, um por slide',\n  'comparação entre duas abordagens, um critério por slide',\n];\nconst formatosEnquete = [\n  'pergunta de opinião sobre uma escolha técnica do dia a dia',\n  'pergunta sobre um hábito de trabalho de quem desenvolve',\n  'pergunta sobre qual abordagem a pessoa usa hoje em um problema comum',\n];\n// um post por dia: dias pares = dicas práticas, dias ímpares = reflexões\nconst manha = $now.ordinal % 2 === 0;\nconst tons = ['didático e calmo', 'descontraído e bem-humorado', 'direto e objetivo', 'curioso e entusiasmado', 'sério e alerta, sem causar pânico'];\nconst ganchos = ['uma pergunta curiosa', 'uma frase curta e inesperada', 'um erro comum', 'uma situação do cotidiano', 'uma afirmação que quebra um mito', 'um \"e se\" interessante'];\nconst tamanhos = {\n  curto: 'curto, entre 250 e 500 caracteres, em 2 a 4 parágrafos bem curtos e sem lista',\n  medio: 'médio, entre 600 e 1000 caracteres',\n  longo: 'longo, entre 1000 e 1500 caracteres',\n  legenda: 'curto, entre 300 e 600 caracteres. É a legenda do carrossel: apresenta o assunto e dá vontade de abrir os slides, sem repetir o conteúdo deles',\n  enquete: 'curto, entre 220 e 450 caracteres. Dá o contexto da pergunta da enquete e convida a votar e comentar o motivo',\n};\n\nconst ultimas = Array.isArray(sd.ultimasCategorias) ? sd.ultimasCategorias : [];\nlet candidatas = categorias.filter(c => !ultimas.includes(c.nome));\nif (!candidatas.length) candidatas = categorias;\nconst cat = pick(candidatas);\n\n// evita repetir formato e tipo de abertura dos últimos posts\nconst semRepetir = (lista, usados) => { const livres = lista.filter(x => !usados.includes(x)); return livres.length ? livres : lista; };\nconst ultimosFormatos = Array.isArray(sd.ultimosFormatos) ? sd.ultimosFormatos : ['pergunta provocativa seguida da resposta'];\nconst ultimosGanchos = Array.isArray(sd.ultimosGanchos) ? sd.ultimosGanchos : ['um \"e se\" interessante', 'uma pergunta curiosa'];\nconst aberturas = Array.isArray(sd.ultimasAberturas) ? sd.ultimasAberturas : ['E se aquela rede', 'E se a melhor'];\n\n// projetos públicos do GitHub: repositório novo entra sozinho na fila dos posts de bastidor\nconst DONO = 'leomagalhaesti';\nlet projetos = [];\ntry {\n  projetos = $('Buscar projetos no GitHub').all().map(i => i.json)\n    .filter(r => r && r.name && !r.fork && !r.archived && !r.private && r.name.toLowerCase() !== DONO)\n    // só projetos com atividade no último ano, para não puxar exercícios antigos\n    .filter(r => r.pushed_at && (Date.now() - new Date(r.pushed_at).getTime()) < 365 * 24 * 3600 * 1000)\n    .map(r => ({ repo: r.name, descricao: r.description || '', ramo: r.default_branch || 'main' }));\n} catch (e) { projetos = []; }\n\n// tipo do post: foto (texto com foto), texto (sem imagem), bastidor (sobre um projeto meu),\n// carrossel (PDF com slides) ou enquete\nconst ultimosTipos = Array.isArray(sd.ultimosTipos) ? sd.ultimosTipos : ['foto', 'foto', 'foto'];\nconst pesos = { foto: 35, texto: 22, bastidor: 18, carrossel: 17, enquete: 8 };\nif (ultimosTipos.slice(0, 2).includes('carrossel')) delete pesos.carrossel;\nif (ultimosTipos.slice(0, 6).includes('enquete')) delete pesos.enquete;\nif (!projetos.length || ultimosTipos.slice(0, 3).includes('bastidor')) delete pesos.bastidor;\nif (ultimosTipos[0] && ultimosTipos[0] === ultimosTipos[1]) delete pesos[ultimosTipos[0]];\nconst sortearPeso = (p) => {\n  let r = Math.random() * Object.values(p).reduce((a, b) => a + b, 0);\n  for (const [k, v] of Object.entries(p)) { r -= v; if (r < 0) return k; }\n  return Object.keys(p)[0];\n};\nconst tipo = sortearPeso(pesos);\n\nconst ultimosProjetos = Array.isArray(sd.ultimosProjetos) ? sd.ultimosProjetos : [];\nconst projeto = projetos.length ? pick(semRepetir(projetos.map(p => p.repo), ultimosProjetos.slice(0, Math.max(0, projetos.length - 1)))) : '';\nconst dadosProjeto = tipo === 'bastidor' ? (projetos.find(p => p.repo === projeto) || null) : null;\n\nconst tamanho = pick({ foto: ['medio', 'longo'], texto: ['curto', 'curto', 'medio'], bastidor: ['medio', 'longo'], carrossel: ['legenda'], enquete: ['enquete'] }[tipo]);\nconst formatosDoTipo = { bastidor: formatosBastidor, carrossel: formatosCarrossel, enquete: formatosEnquete }[tipo] || (manha ? formatosManha : formatosNoite);\n\n// título de uma página do Notion, em qualquer formato de saída do nó\nconst tituloDe = (j) => {\n  if (!j) return '';\n  if (j.properties) {\n    for (const p of Object.values(j.properties)) {\n      if (p && p.type === 'title' && Array.isArray(p.title)) return p.title.map(t => t.plain_text || '').join('');\n    }\n  }\n  return j.name || j.Name || j.Nome || j.property_name || j.property_nome || j.title || '';\n};\n\nconst doNotion = $input.all().map(i => String(tituloDe(i.json)).trim()).filter(Boolean);\nconst memoria = Array.isArray(sd.temas) ? sd.temas : [];\nconst temas = [...new Set([...memoria, ...doNotion])].slice(0, 80);\n\nreturn [{\n  json: {\n    tipo,\n    tamanho,\n    tamanhoTexto: tamanhos[tamanho],\n    area: tipo === 'bastidor' ? 'Bastidor do projeto ' + projeto : cat.nome,\n    areaReserva: cat.nome,\n    projeto: dadosProjeto,\n    readmeUrl: dadosProjeto\n      ? 'https://raw.githubusercontent.com/' + DONO + '/' + dadosProjeto.repo + '/' + dadosProjeto.ramo + '/README.md'\n      : 'https://raw.githubusercontent.com/' + DONO + '/' + DONO + '/main/README.md',\n    formato: pick(semRepetir(formatosDoTipo, ultimosFormatos)),\n    formatoReserva: pick(semRepetir(manha ? formatosManha : formatosNoite, ultimosFormatos)),\n    tom: pick(tons),\n    gancho: pick(semRepetir(ganchos, ultimosGanchos)),\n    aberturasRecentes: aberturas.length ? aberturas.map(t => '- ' + t).join('\\n') : '(nenhuma ainda)',\n    dicaImagem: pick(cat.imagens),\n    temasAnteriores: temas.length ? temas.map(t => '- ' + t).join('\\n') : '(nenhum ainda)',\n  },\n}];\n"
       }
     },
     {
@@ -71,11 +72,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1808,
+        2528,
         320
       ],
       "parameters": {
-        "jsCode": "const d = $input.first().json;\nconst sistema = \"Você escreve posts de LinkedIn em português do Brasil para Leonardo Magalhães, desenvolvedor full stack que constrói aplicações web com React e TypeScript e automações com n8n e IA. O público são desenvolvedores, pessoas de produto e recrutadores de tecnologia, então escreva com profundidade técnica real e de forma clara, sem jargão desnecessário. Nunca apresente o autor como técnico ou profissional de suporte.\\n\\nCada post trata de UM único tema prático da área indicada, no formato, tom e tipo de abertura indicados no pedido. Escreva em primeira pessoa, como uma pessoa real escreveria. Evite clichês de texto gerado por IA, como 'No mundo atual', 'Em um mundo cada vez mais', 'é inegável', 'revolucionar', 'mergulhar'. Evite o travessão longo. Varie a estrutura: nem todo post precisa de lista e nem todo post termina com pergunta. Pode terminar com pergunta, convite para comentar ou uma frase de reflexão.\\n\\nEstrutura: primeira linha forte que prenda a atenção, parágrafos curtos separados por linha em branco, e no final 3 a 5 hashtags relevantes em uma única linha. Entre 600 e 1500 caracteres. Use no máximo 2 emojis, só se combinarem com o tom.\\n\\nREGRAS OBRIGATÓRIAS: revise ortografia e gramática antes de responder, sem palavras inventadas ou erradas. Escreva em texto simples: sem markdown, sem asteriscos, sem letras especiais ou fontes Unicode estilizadas, e sem os caracteres ( ) [ ] { } < > @ | ~ _ \\\\ em nenhum lugar. Para listas, use um hífen no início de cada linha. Não invente números, estatísticas, empresas, nomes, clientes, empregos, resultados ou experiências pessoais específicas. A primeira frase NÃO pode começar com as mesmas palavras de nenhuma das aberturas recentes listadas no pedido.\\n\\nFORMATO DA RESPOSTA (siga exatamente, sem nada antes ou depois):\\nTITULO: tema curto e natural do post, até 80 caracteres, sem prefixos como 'Tecnologia:'\\nBUSCA: 1 a 3 palavras simples EM INGLÊS para buscar uma foto no banco de imagens Pixabay, descrevendo algo visual e concreto, inspirada na 'Ideia visual' do pedido e adaptada ao tema. Não use marcas.\\nPOST:\\no texto completo do post, começando na linha seguinte\";\nconst usuario =\n  'Área do post de hoje: ' + d.area + '\\n' +\n  'Formato: ' + d.formato + '\\n' +\n  'Tom: ' + d.tom + '\\n' +\n  'Comece com: ' + d.gancho + '\\n' +\n  'Ideia visual para a foto: ' + d.dicaImagem + '\\n\\n' +\n  'Aberturas dos meus últimos posts (não comece igual a nenhuma delas):\\n' + d.aberturasRecentes + '\\n\\n' +\n  'Temas que já publiquei (NÃO repita nenhum deles nem algo parecido):\\n' + d.temasAnteriores + '\\n\\n' +\n  'Escolha um tema novo dentro dessa área e escreva o post de hoje.';\n\nreturn [{ json: { ...d, corpoGemini: {\n  systemInstruction: { parts: [{ text: sistema }] },\n  contents: [{ role: 'user', parts: [{ text: usuario }] }],\n  generationConfig: { temperature: 0.9, maxOutputTokens: 4000 }\n} } }];"
+        "jsCode": "const d = { ...$('Montar tema do dia').first().json };\n\n// material do projeto para o post de bastidor; sem material, vira post só de texto\nlet readme = '';\ntry { const r = $input.first().json; readme = typeof r.data === 'string' ? r.data : ''; } catch (e) { readme = ''; }\nreadme = readme.replace(/\\r/g, '').replace(/!?\\[([^\\]]*)\\]\\([^)]*\\)/g, '$1').replace(/\\n{3,}/g, '\\n\\n').trim().slice(0, 6000);\nif (d.tipo === 'bastidor' && (!d.projeto || readme.length < 300)) {\n  d.tipo = 'texto'; d.area = d.areaReserva; d.formato = d.formatoReserva; d.projeto = null;\n}\n\nconst sistema = \"Você escreve posts de LinkedIn em português do Brasil para Leonardo Magalhães, desenvolvedor full stack que constrói aplicações web com React e TypeScript e automações com n8n e IA. O público são desenvolvedores, pessoas de produto e recrutadores de tecnologia, então escreva com profundidade técnica real e de forma clara, sem jargão desnecessário. Nunca apresente o autor como técnico ou profissional de suporte.\\n\\nCada post trata de UM único tema prático da área indicada, no formato, tom e tipo de abertura indicados no pedido. Escreva em primeira pessoa, como uma pessoa real escreveria. Evite clichês de texto gerado por IA, como 'No mundo atual', 'Em um mundo cada vez mais', 'é inegável', 'revolucionar', 'mergulhar'. Evite o travessão longo. Varie a estrutura: nem todo post precisa de lista e nem todo post termina com pergunta. Pode terminar com pergunta, convite para comentar ou uma frase de reflexão.\\n\\nEstrutura: primeira linha forte que prenda a atenção, parágrafos curtos separados por linha em branco, e no final 3 a 5 hashtags relevantes em uma única linha. Respeite o tamanho indicado no pedido. Use no máximo 2 emojis, só se combinarem com o tom.\\n\\nREGRAS OBRIGATÓRIAS: revise ortografia e gramática antes de responder, sem palavras inventadas ou erradas. Escreva em texto simples: sem markdown, sem asteriscos, sem letras especiais ou fontes Unicode estilizadas, sem links, e sem os caracteres ( ) [ ] { } < > @ | ~ _ \\\\ em nenhum lugar. Para listas, use um hífen no início de cada linha. Não invente números, estatísticas, empresas, nomes, clientes, empregos, resultados ou experiências pessoais específicas. A primeira frase NÃO pode começar com as mesmas palavras de nenhuma das aberturas recentes listadas no pedido.\\n\\nFORMATO DA RESPOSTA (siga exatamente, sem nada antes ou depois):\\nTITULO: tema curto e natural do post, com a acentuação correta do português, até 80 caracteres, sem prefixos como 'Tecnologia:'\\nBUSCA: 1 a 3 palavras simples EM INGLÊS para buscar uma foto no banco de imagens Pixabay, descrevendo algo visual e concreto, inspirada na 'Ideia visual' do pedido e adaptada ao tema. Não use marcas.\\nPOST:\\no texto completo do post, começando na linha seguinte\";\n\nconst comum =\n  'Formato: ' + d.formato + '\\n' +\n  'Tom: ' + d.tom + '\\n' +\n  'Comece com: ' + d.gancho + '\\n' +\n  'Tamanho: ' + d.tamanhoTexto + '\\n' +\n  'Ideia visual para a foto: ' + d.dicaImagem + '\\n\\n';\nconst historico =\n  'Aberturas dos meus últimos posts (não comece igual a nenhuma delas):\\n' + d.aberturasRecentes + '\\n\\n' +\n  'Temas que já publiquei (NÃO repita nenhum deles nem algo parecido):\\n' + d.temasAnteriores + '\\n\\n';\n\n// carrossel e enquete pedem um bloco a mais depois do texto do post\nconst extra = d.tipo === 'carrossel'\n  ? '\\n\\nO post de hoje é um CARROSSEL. Depois do texto do POST, acrescente os slides exatamente neste formato:\\nSLIDES:\\nSLIDE 1: título da capa, até 60 caracteres\\nsubtítulo da capa em uma linha, até 90 caracteres\\nSLIDE 2: título curto do slide, até 45 caracteres\\ntexto do slide em 1 a 3 frases, até 220 caracteres\\nE assim por diante, de 5 a 7 slides no total. O último slide é o fechamento, com um resumo ou um convite para comentar. Nos slides use a acentuação correta do português e não use emojis, hashtags nem numeração no título.'\n  : d.tipo === 'enquete'\n  ? '\\n\\nO post de hoje é uma ENQUETE. Depois do texto do POST, acrescente exatamente neste formato:\\nENQUETE: a pergunta da enquete, até 130 caracteres\\nOPCOES:\\n- primeira opção, até 28 caracteres\\n- segunda opção, até 28 caracteres\\nUse 3 ou 4 opções curtas, que não se sobreponham. Escreva a pergunta e as opções com a acentuação correta do português e sem emojis.'\n  : '';\n\nconst usuario = (d.tipo === 'bastidor'\n  ? 'Post de hoje: bastidor de um projeto meu, o repositório ' + d.projeto.repo + ' no GitHub.\\n' + comum +\n    'Material do projeto, tirado do README do repositório. Use SOMENTE fatos que estão neste material. Não invente métricas, usuários, clientes, prazos, resultados nem funcionalidades que o material não cita, e não invente histórias sobre o processo, como o que eu achei, tentei ou errei, se o material não contar. Se o material disser que é um protótipo ou piloto, respeite isso:\\n-----\\n' + readme + '\\n-----\\n\\n' +\n    historico +\n    'Escolha UM aspecto específico do projeto que ainda não apareceu nos temas acima e escreva o post de hoje. Use o nome do projeto como aparece no material. Não coloque link, ele é adicionado depois.'\n  : 'Área do post de hoje: ' + d.area + '\\n' + comum + historico +\n    'Escolha um tema novo dentro dessa área e escreva o post de hoje.') + extra;\n\nreturn [{ json: { ...d, corpoGemini: {\n  systemInstruction: { parts: [{ text: sistema }] },\n  contents: [{ role: 'user', parts: [{ text: usuario }] }],\n  generationConfig: { temperature: 0.9, maxOutputTokens: 8000 }\n} } }];\n"
       }
     },
     {
@@ -84,10 +85,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "retryOnFail": true,
-      "maxTries": 3,
+      "maxTries": 5,
       "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput",
       "position": [
-        2128,
+        2848,
         320
       ],
       "parameters": {
@@ -115,11 +117,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2368,
+        3088,
         320
       ],
       "parameters": {
-        "jsCode": "const entrada = $input.first().json;\nconst tema = $('Montar tema do dia').first().json;\n\nconst partes = (entrada.candidates && entrada.candidates[0] && entrada.candidates[0].content && entrada.candidates[0].content.parts) || [];\nlet txt = partes.filter(p => !p.thought).map(p => p.text || '').join('');\nif (typeof txt !== 'string' || !txt.trim()) {\n  throw new Error('A IA não devolveu texto (' + JSON.stringify(entrada.promptFeedback || entrada.error || '').slice(0, 200) + '). Verifique a chave do Gemini e o limite diário gratuito.');\n}\ntxt = txt.replace(/\\r/g, '').trim();\n\nconst pega = (re) => { const r = txt.match(re); return r ? r[1].trim() : ''; };\nlet titulo = pega(/^\\s*T[IÍ]TULO:\\s*(.+)$/im);\nlet busca = pega(/^\\s*BUSCA:\\s*(.+)$/im);\nconst iPost = txt.search(/^\\s*POST:/im);\nlet post = iPost >= 0 ? txt.slice(iPost).replace(/^\\s*POST:\\s*/i, '') : '';\n\nconst limparTexto = (s) => String(s || '')\n  .replace(/\\*\\*/g, '')\n  .replace(/^#{1,6}\\s+/gm, '')\n  .replace(/[()\\[\\]{}<>|~*_@\\\\]/g, ' ')\n  .replace(/[ \\t]{2,}/g, ' ')\n  .replace(/ +\\n/g, '\\n')\n  .replace(/\\n{3,}/g, '\\n\\n')\n  .trim();\n\npost = limparTexto(post);\ntitulo = limparTexto(titulo).replace(/^\\s*tecnologia\\s*:\\s*/i, '').replace(/\\n/g, ' ').slice(0, 80).trim();\n\nif (!post || post.length < 200) throw new Error('O post veio vazio ou curto demais (' + post.length + ' caracteres). Resposta da IA: ' + txt.slice(0, 200));\nif (!titulo) throw new Error('A IA não devolveu a linha TITULO. Resposta da IA: ' + txt.slice(0, 200));\nif (post.length > 2700) {\n  const corte = post.lastIndexOf('\\n\\n', 2700);\n  post = post.slice(0, corte > 500 ? corte : 2700).trim();\n}\n\nbusca = busca.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\\s+/g, ' ').trim().toLowerCase();\nif (!busca) busca = tema.dicaImagem;\n\nreturn [{ json: { titulo, post, buscaImagem: busca, area: tema.area } }];"
+        "jsCode": "const entrada = $input.first().json;\nconst tema = $('Montar pedido da IA').first().json;\n\nconst partes = (entrada.candidates && entrada.candidates[0] && entrada.candidates[0].content && entrada.candidates[0].content.parts) || [];\nlet txt = partes.filter(p => !p.thought).map(p => p.text || '').join('');\nif (typeof txt !== 'string' || !txt.trim()) {\n  throw new Error('A IA não devolveu texto (' + JSON.stringify(entrada.promptFeedback || entrada.error || '').slice(0, 200) + '). Verifique a chave do Gemini e o limite diário gratuito.');\n}\ntxt = txt.replace(/\\r/g, '').trim();\n\nconst pega = (re) => { const r = txt.match(re); return r ? r[1].trim() : ''; };\nlet titulo = pega(/^\\s*T[IÍ]TULO:\\s*(.+)$/im);\nlet busca = pega(/^\\s*BUSCA:\\s*(.+)$/im);\nconst iPost = txt.search(/^\\s*POST:/im);\nlet post = iPost >= 0 ? txt.slice(iPost).replace(/^\\s*POST:\\s*/i, '') : '';\n// carrossel e enquete trazem um bloco a mais depois do texto do post\nlet bloco = '';\nconst iBloco = post.search(/^\\s*(SLIDES|ENQUETE):/im);\nif (iBloco >= 0) { bloco = post.slice(iBloco); post = post.slice(0, iBloco); }\n\nconst limparTexto = (s) => String(s || '')\n  .replace(/\\*\\*/g, '')\n  .replace(/^#{1,6}\\s+/gm, '')\n  .replace(/[()\\[\\]{}<>|~*_@\\\\]/g, ' ')\n  .replace(/[ \\t]{2,}/g, ' ')\n  .replace(/ +\\n/g, '\\n')\n  .replace(/\\n{3,}/g, '\\n\\n')\n  .trim();\n\npost = limparTexto(post);\n// resposta cortada pelo limite de tokens: fica só até o último parágrafo completo\nconst cortada = entrada.candidates[0].finishReason === 'MAX_TOKENS';\nif (cortada) {\n  const paragrafos = post.split('\\n\\n');\n  while (paragrafos.length && !/[.!?…]$/.test(paragrafos[paragrafos.length - 1].trim())) paragrafos.pop();\n  post = paragrafos.join('\\n\\n').trim();\n}\ntitulo = limparTexto(titulo).replace(/^\\s*tecnologia\\s*:\\s*/i, '').replace(/\\n/g, ' ').slice(0, 80).trim();\n\nif (!post || post.length < 200) throw new Error('O post veio vazio ou curto demais (' + post.length + ' caracteres). Resposta da IA: ' + txt.slice(0, 200));\nif (!titulo) throw new Error('A IA não devolveu a linha TITULO. Resposta da IA: ' + txt.slice(0, 200));\nif (post.length > 2700) {\n  const corte = post.lastIndexOf('\\n\\n', 2700);\n  post = post.slice(0, corte > 500 ? corte : 2700).trim();\n}\n\n// slides do carrossel e enquete; se vierem fora do formato, o post sai como texto simples\nlet tipo = tema.tipo, slides = [], enquete = null;\nconst linha = (s) => limparTexto(s).replace(/#/g, '').replace(/\\s+/g, ' ').trim();\nif (tipo === 'carrossel') {\n  slides = cortada ? [] : bloco.replace(/^\\s*SLIDES:\\s*/i, '').split(/^\\s*SLIDE\\s*\\d+\\s*:/im).map(b => b.trim()).filter(Boolean).map(b => {\n    const l = b.split('\\n').map(x => x.trim()).filter(Boolean);\n    return { titulo: linha(l[0] || '').slice(0, 90), texto: linha(l.slice(1).join(' ')).slice(0, 320) };\n  }).filter(s => s.titulo && s.texto).slice(0, 8);\n  if (slides.length < 4) { tipo = 'texto'; slides = []; }\n}\nif (tipo === 'enquete') {\n  const pergunta = linha((bloco.match(/^\\s*ENQUETE:\\s*(.+)$/im) || [])[1] || '');\n  const opcoes = [...new Set((bloco.split(/^\\s*OP[CÇ][OÕ]ES:\\s*$/im)[1] || '').split('\\n').map(o => linha(o.replace(/^\\s*[-•]\\s*/, ''))).filter(o => o && o.length <= 30))].slice(0, 4);\n  if (cortada || !pergunta || pergunta.length > 140 || opcoes.length < 2) tipo = 'texto';\n  else enquete = { pergunta, opcoes };\n}\n\n// texto de reserva: se o carrossel ou a enquete não puderem ser publicados, o post sai só com o texto,\n// sem as frases que falam de slides ou de votação\nconst semMencao = (t) => t.split('\\n\\n').map(par => par.split('\\n').map(l => l.split(/(?<=[.!?])\\s+/).filter(f => !/enquete|vot[eao]|arrast|desliz|slide|carrossel/i.test(f)).join(' ')).filter(Boolean).join('\\n')).filter(Boolean).join('\\n\\n');\nconst postReserva = ['carrossel', 'enquete'].includes(tema.tipo) ? semMencao(post) : '';\nif (tipo !== tema.tipo && postReserva.length >= 150) post = postReserva;\n\n// post de bastidor leva o link do repositório, antes da linha de hashtags\nif (tema.tipo === 'bastidor' && tema.projeto) {\n  const link = 'Código no GitHub: https://github.com/leomagalhaesti/' + tema.projeto.repo;\n  const linhas = post.split('\\n');\n  if (linhas.length > 1 && linhas[linhas.length - 1].trim().startsWith('#')) {\n    linhas.splice(linhas.length - 1, 0, link, '');\n    post = linhas.join('\\n').replace(/\\n{3,}/g, '\\n\\n');\n  } else {\n    post = post + '\\n\\n' + link;\n  }\n}\n\nbusca = busca.replace(/[^a-zA-Z0-9 ]/g, ' ').replace(/\\s+/g, ' ').trim().toLowerCase();\nif (!busca) busca = tema.dicaImagem;\n\nreturn [{ json: { titulo, post, buscaImagem: busca, area: tema.area, tipo, tamanho: tema.tamanho, projeto: tema.projeto ? tema.projeto.repo : '', slides, enquete, postReserva } }];\n"
       }
     },
     {
@@ -132,7 +134,7 @@
       "waitBetweenTries": 5000,
       "onError": "continueRegularOutput",
       "position": [
-        2608,
+        3568,
         320
       ],
       "parameters": {
@@ -189,7 +191,7 @@
       "waitBetweenTries": 5000,
       "onError": "continueRegularOutput",
       "position": [
-        2848,
+        3808,
         320
       ],
       "parameters": {
@@ -242,7 +244,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3088,
+        4048,
         320
       ],
       "parameters": {
@@ -258,7 +260,7 @@
       "maxTries": 3,
       "waitBetweenTries": 5000,
       "position": [
-        3328,
+        4288,
         320
       ],
       "parameters": {
@@ -279,7 +281,7 @@
       "type": "n8n-nodes-base.linkedIn",
       "typeVersion": 1,
       "position": [
-        3648,
+        4608,
         320
       ],
       "parameters": {
@@ -304,11 +306,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3888,
+        4848,
         320
       ],
       "parameters": {
-        "jsCode": "const sd = $getWorkflowStaticData('global');\nconst post = $('Validar e limpar post').first().json;\nconst foto = $('Escolher foto').first().json;\n\nsd.fotosUsadas = [...(Array.isArray(sd.fotosUsadas) ? sd.fotosUsadas : []), { id: foto.fotoId, data: $today.toFormat('yyyy-MM-dd') }].slice(-300);\nsd.temas = [post.titulo, ...(Array.isArray(sd.temas) ? sd.temas : [])].slice(0, 80);\nsd.ultimasCategorias = [post.area, ...(Array.isArray(sd.ultimasCategorias) ? sd.ultimasCategorias : [])].slice(0, 3);\nconst temaDoDia = $('Montar tema do dia').first().json;\nsd.ultimosFormatos = [temaDoDia.formato, ...(Array.isArray(sd.ultimosFormatos) ? sd.ultimosFormatos : [])].slice(0, 3);\nsd.ultimosGanchos = [temaDoDia.gancho, ...(Array.isArray(sd.ultimosGanchos) ? sd.ultimosGanchos : [])].slice(0, 3);\nconst abertura = String(post.post || '').trim().split(/\\s+/).slice(0, 4).join(' ');\nsd.ultimasAberturas = [abertura, ...(Array.isArray(sd.ultimasAberturas) ? sd.ultimasAberturas : ['E se aquela rede', 'E se a melhor'])].slice(0, 6);\n\nreturn [{ json: { registrado: true, fotoId: foto.fotoId, titulo: post.titulo } }];"
+        "jsCode": "const sd = $getWorkflowStaticData('global');\nconst post = $('Validar e limpar post').first().json;\nconst temFoto = post.tipo === 'foto';\nconst foto = temFoto ? $('Escolher foto').first().json : {};\n\nif (temFoto) sd.fotosUsadas = [...(Array.isArray(sd.fotosUsadas) ? sd.fotosUsadas : []), { id: foto.fotoId, data: $today.toFormat('yyyy-MM-dd') }].slice(-300);\nsd.temas = [post.titulo, ...(Array.isArray(sd.temas) ? sd.temas : [])].slice(0, 80);\nsd.ultimasCategorias = [post.area, ...(Array.isArray(sd.ultimasCategorias) ? sd.ultimasCategorias : [])].slice(0, 3);\nconst temaDoDia = $('Montar pedido da IA').first().json;\nsd.ultimosFormatos = [temaDoDia.formato, ...(Array.isArray(sd.ultimosFormatos) ? sd.ultimosFormatos : [])].slice(0, 3);\nsd.ultimosGanchos = [temaDoDia.gancho, ...(Array.isArray(sd.ultimosGanchos) ? sd.ultimosGanchos : [])].slice(0, 3);\nsd.ultimosTipos = [post.tipo, ...(Array.isArray(sd.ultimosTipos) ? sd.ultimosTipos : ['foto', 'foto', 'foto'])].slice(0, 8);\nif (post.projeto) sd.ultimosProjetos = [post.projeto, ...(Array.isArray(sd.ultimosProjetos) ? sd.ultimosProjetos : [])].slice(0, 6);\nconst abertura = String(post.post || '').trim().split(/\\s+/).slice(0, 4).join(' ');\nsd.ultimasAberturas = [abertura, ...(Array.isArray(sd.ultimasAberturas) ? sd.ultimasAberturas : ['E se aquela rede', 'E se a melhor'])].slice(0, 6);\n\nreturn [{ json: { registrado: true, tipo: post.tipo, fotoId: foto.fotoId || '', titulo: post.titulo } }];\n"
       }
     },
     {
@@ -320,7 +322,7 @@
       "maxTries": 3,
       "waitBetweenTries": 5000,
       "position": [
-        4128,
+        5088,
         320
       ],
       "parameters": {
@@ -367,9 +369,9 @@
         160
       ],
       "parameters": {
-        "content": "## 1 · Preparar o tema\nSorteia área, formato e tom. Alterna a cada dia entre dicas práticas e reflexões.",
-        "height": 300,
-        "width": 1000,
+        "content": "## 1 · Preparar o tema\nEspera um horário sorteado, lê os projetos do GitHub e sorteia tipo (foto, só texto, bastidor de projeto, carrossel ou enquete), área, formato, tom e tamanho.",
+        "height": 920,
+        "width": 1720,
         "color": 4
       }
     },
@@ -379,13 +381,13 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2080,
+        2800,
         160
       ],
       "parameters": {
-        "content": "## 2 · Criar post e foto\nIA escreve, o texto é validado e uma foto nunca usada antes é escolhida.",
-        "height": 300,
-        "width": 1480,
+        "content": "## 2 · Criar post e mídia\nIA escreve e o texto é validado. Post com foto busca uma foto nunca usada; carrossel gera o PDF dos slides e envia ao LinkedIn.",
+        "height": 920,
+        "width": 1720,
         "color": 5
       }
     },
@@ -395,12 +397,12 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3600,
+        4560,
         160
       ],
       "parameters": {
-        "content": "## 3 · Publicar e registrar\nPublica, guarda o histórico interno e registra no Notion.",
-        "height": 300,
+        "content": "## 3 · Publicar e registrar\nPublica com foto, carrossel, enquete ou só texto (também é a reserva se carrossel ou enquete falharem), guarda o histórico e registra no Notion.",
+        "height": 920,
         "width": 760,
         "color": 6
       }
@@ -415,10 +417,450 @@
         -208
       ],
       "parameters": {
-        "content": "## Antes de ativar\n1. Credencial **Header Auth** do Gemini: Name `x-goog-api-key`, Value = sua chave do aistudio.google.com/apikey\n2. Credencial **Query Auth** do Pixabay: Name `key`, Value = sua chave nova\n3. Confira Notion e LinkedIn nos nós de cada seção\n4. **Desative o workflow antigo**\n5. Ative este (chave Active). Posta às **09h** (fuso America/Bahia), um post por dia\n\nHistórico de fotos e temas só é gravado em execuções automáticas, não em testes.",
+        "content": "## Antes de ativar\n1. Credencial **Header Auth** do Gemini: Name `x-goog-api-key`, Value = sua chave do aistudio.google.com/apikey\n2. Credencial **Query Auth** do Pixabay: Name `key`, Value = sua chave nova\n3. Confira Notion e LinkedIn nos nós de cada seção\n4. **Desative o workflow antigo**\n5. Ative este (chave Active). Posta em horário sorteado entre **08h10 e 10h40** (fuso America/Bahia), um post por dia\n\nHistórico de fotos e temas só é gravado em execuções automáticas, não em testes.",
         "height": 300,
         "width": 720,
         "color": 7
+      }
+    },
+    {
+      "id": "d38f1b7c-36ff-4e7d-af8f-376498c786bb",
+      "name": "Esperar horário sorteado",
+      "webhookId": "111abc3e-1294-4201-84bc-94b7b12deef9",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1328,
+        320
+      ],
+      "parameters": {
+        "amount": "={{ $execution.mode === 'test' ? 0 : 10 + Math.floor(Math.random() * 151) }}",
+        "unit": "minutes"
+      }
+    },
+    {
+      "id": "a7db346c-39cc-4e08-b178-18bbf15f4eab",
+      "name": "Buscar projetos no GitHub",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "position": [
+        1568,
+        320
+      ],
+      "parameters": {
+        "url": "https://api.github.com/users/leomagalhaesti/repos",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "sort",
+              "value": "pushed"
+            },
+            {
+              "name": "per_page",
+              "value": "30"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "39cec830-b6fa-4260-9bf7-4aca5d45922c",
+      "name": "Buscar README do projeto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "position": [
+        2288,
+        320
+      ],
+      "parameters": {
+        "url": "={{ $json.readmeUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "id": "8bd4dbf3-f4a4-41a7-8177-7cce2eeb953d",
+      "name": "É post com foto?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3328,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "041d4988-11ab-4117-aabe-36384a7ed681",
+              "leftValue": "={{ $json.tipo }}",
+              "rightValue": "foto",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "bf2f4d48-f1a4-4f3e-8085-e2c5a3059990",
+      "name": "Publicar só texto",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        4608,
+        920
+      ],
+      "parameters": {
+        "person": "N3t4o9MA-J",
+        "text": "={{ $('Validar e limpar post').first().json.postReserva || $('Validar e limpar post').first().json.post }}",
+        "shareMediaCategory": "NONE",
+        "additionalFields": {
+          "visibility": "PUBLIC"
+        }
+      },
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "r8Oa4ik7ZPuWpRfG",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "id": "e1878d64-7ac4-40d6-a858-0ebf04663ce2",
+      "name": "É carrossel?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3328,
+        520
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fc4a92d7-1bec-4f33-905b-d22ce8ddcce0",
+              "leftValue": "={{ $('Validar e limpar post').first().json.tipo }}",
+              "rightValue": "carrossel",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "919c27a6-e6ba-46ca-a422-c9861d50aa0f",
+      "name": "É enquete?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3328,
+        720
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c78258dc-9453-4970-b3b0-abb4f208ab77",
+              "leftValue": "={{ $('Validar e limpar post').first().json.tipo }}",
+              "rightValue": "enquete",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "bb3d69a4-f8ed-44ff-b9a2-35c8948b298b",
+      "name": "Iniciar envio do PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput",
+      "position": [
+        3568,
+        520
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/rest/documents?action=initializeUpload",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "LinkedIn-Version",
+              "value": "202609"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"initializeUploadRequest\": {\"owner\": \"urn:li:person:N3t4o9MA-J\"}}"
+      },
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "r8Oa4ik7ZPuWpRfG",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "id": "c10d6f7d-bcdc-48a3-9a61-d7bc1c822884",
+      "name": "Montar PDF do carrossel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "onError": "continueErrorOutput",
+      "position": [
+        3808,
+        520
+      ],
+      "parameters": {
+        "jsCode": "// Monta o PDF do carrossel direto em código, sem navegador: uma página 1080x1350 por slide.\nconst post = $('Validar e limpar post').first().json;\nconst envio = $input.first().json.value || {};\nif (!envio.uploadUrl || !envio.document) throw new Error('O LinkedIn não devolveu o endereço de envio do PDF.');\nconst slides = post.slides || [];\nif (slides.length < 4) throw new Error('Carrossel com menos de 4 slides.');\n\nconst W = 1080, H = 1350, M = 96;\n// larguras das letras da Helvetica (códigos 32 a 126), para quebrar as linhas no lugar certo\nconst LARG = {\n  n: [278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584],\n  b: [278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584],\n};\nconst CP1252 = { '–': 0x96, '—': 0x97, '‘': 0x91, '’': 0x92, '“': 0x93, '”': 0x94, '•': 0x95, '…': 0x85 };\n// o PDF usa a codificação WinAnsi: mantém acentos do português e descarta emojis\nconst codigos = (s) => { const o = []; for (const ch of String(s)) { const c = ch.codePointAt(0); if (CP1252[ch]) o.push(CP1252[ch]); else if (c >= 32 && c <= 126 || c >= 160 && c <= 255) o.push(c); } return o; };\nconst base = (c) => c < 127 ? c : (String.fromCharCode(c).normalize('NFD').charCodeAt(0));\nconst largura = (s, f, tam) => codigos(s).reduce((t, c) => { const b = base(c); return t + (b >= 32 && b <= 126 ? LARG[f][b - 32] : 556); }, 0) * tam / 1000;\nconst hex = (s) => '<' + codigos(s).map(c => c.toString(16).padStart(2, '0')).join('') + '>';\nconst quebrar = (texto, f, tam, max) => {\n  const linhas = []; let atual = '';\n  for (const p of String(texto).replace(/\\s+/g, ' ').trim().split(' ')) {\n    const tenta = atual ? atual + ' ' + p : p;\n    if (largura(tenta, f, tam) <= max || !atual) atual = tenta; else { linhas.push(atual); atual = p; }\n  }\n  if (atual) linhas.push(atual);\n  return linhas;\n};\n// diminui a letra até o texto caber no número máximo de linhas\nconst ajustar = (texto, f, tam, min, max, maxLinhas) => { let l; for (;; tam -= 4) { l = quebrar(texto, f, tam, max); if (l.length <= maxLinhas || tam <= min) break; } return { linhas: l.slice(0, maxLinhas), tam }; };\nconst cor = (h) => [1, 3, 5].map(i => (parseInt(h.slice(i, i + 2), 16) / 255).toFixed(3)).join(' ');\nconst FUNDO = '#10222A', FUNDO2 = '#171A27', VERDE = '#72B875', LIMA = '#B8E05F', CLARO = '#F4F7F8', SUAVE = '#C9D6D8';\n\nconst paginas = slides.map((s, i) => {\n  const c = []; const total = slides.length, capa = i === 0;\n  const ret = (h, x, y, w, a) => c.push(cor(h) + ' rg ' + x + ' ' + y + ' ' + w + ' ' + a + ' re f');\n  const txt = (t, f, tam, h, x, y) => c.push('BT /' + (f === 'b' ? 'F2' : 'F1') + ' ' + tam + ' Tf ' + cor(h) + ' rg ' + x.toFixed(1) + ' ' + y.toFixed(1) + ' Td ' + hex(t) + ' Tj ET');\n  ret(capa ? FUNDO2 : FUNDO, 0, 0, W, H);\n  ret(VERDE, 0, H - 18, W, 18);\n  let y = H - M - 60;\n  if (capa) {\n    ret(LIMA, M, y - 150, 120, 10);\n    y -= 300;\n    const t = ajustar(s.titulo, 'b', 104, 64, W - 2 * M, 5);\n    for (const l of t.linhas) { txt(l, 'b', t.tam, CLARO, M, y); y -= t.tam * 1.14; }\n    y -= 40;\n    const sub = ajustar(s.texto, 'n', 46, 34, W - 2 * M, 4);\n    for (const l of sub.linhas) { txt(l, 'n', sub.tam, SUAVE, M, y); y -= sub.tam * 1.4; }\n  } else {\n    txt(String(i).padStart(2, '0'), 'b', 150, VERDE, M, y - 110);\n    y -= 300;\n    const t = ajustar(s.titulo, 'b', 76, 52, W - 2 * M, 3);\n    for (const l of t.linhas) { txt(l, 'b', t.tam, CLARO, M, y); y -= t.tam * 1.16; }\n    ret(LIMA, M, y + 10, 90, 8);\n    y -= 80;\n    const b = ajustar(s.texto, 'n', 54, 38, W - 2 * M, 9);\n    for (const l of b.linhas) { txt(l, 'n', b.tam, SUAVE, M, y); y -= b.tam * 1.45; }\n  }\n  // rodapé: autor, barra de progresso e indicação de página\n  ret('#20343A', M, 150, W - 2 * M, 6);\n  ret(VERDE, M, 150, (W - 2 * M) * (i + 1) / total, 6);\n  txt('Leonardo Magalhães', 'b', 30, CLARO, M, 88);\n  const dir = i < total - 1 ? 'Arraste para o lado »' : (i + 1) + ' de ' + total;\n  txt(dir, 'n', 30, i < total - 1 ? LIMA : SUAVE, W - M - largura(dir, 'n', 30), 88);\n  return c.join('\\n');\n});\n\n// estrutura do arquivo PDF\nconst objs = [];\nconst add = (corpo) => { objs.push(corpo); return objs.length; };\nadd('<< /Type /Catalog /Pages 2 0 R >>');\nadd('');\nadd('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');\nadd('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');\nconst kids = [];\nfor (const conteudo of paginas) {\n  const nc = add('<< /Length ' + conteudo.length + ' >>\\nstream\\n' + conteudo + '\\nendstream');\n  kids.push(add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + W + ' ' + H + '] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ' + nc + ' 0 R >>'));\n}\nobjs[1] = '<< /Type /Pages /Count ' + kids.length + ' /Kids [' + kids.map(k => k + ' 0 R').join(' ') + '] >>';\nlet pdf = '%PDF-1.4\\n'; const pos = [];\nobjs.forEach((o, i) => { pos.push(pdf.length); pdf += (i + 1) + ' 0 obj\\n' + o + '\\nendobj\\n'; });\nconst xref = pdf.length;\npdf += 'xref\\n0 ' + (objs.length + 1) + '\\n0000000000 65535 f \\n' + pos.map(p => String(p).padStart(10, '0') + ' 00000 n \\n').join('');\npdf += 'trailer\\n<< /Size ' + (objs.length + 1) + ' /Root 1 0 R >>\\nstartxref\\n' + xref + '\\n%%EOF\\n';\n\nconst nome = String(post.titulo || 'carrossel').normalize('NFD').replace(/[^a-zA-Z0-9 ]/g, '').trim().replace(/\\s+/g, '-').toLowerCase().slice(0, 60) + '.pdf';\nreturn [{\n  json: { uploadUrl: envio.uploadUrl, document: envio.document, paginas: paginas.length, arquivo: nome },\n  binary: { data: { data: Buffer.from(pdf, 'latin1').toString('base64'), mimeType: 'application/pdf', fileName: nome, fileExtension: 'pdf' } },\n}];\n"
+      }
+    },
+    {
+      "id": "6462641a-4eaf-46ce-8cb1-105174f698a6",
+      "name": "Enviar PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput",
+      "position": [
+        4048,
+        520
+      ],
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $json.uploadUrl }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "LinkedIn-Version",
+              "value": "202609"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data"
+      },
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "r8Oa4ik7ZPuWpRfG",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "id": "71d05656-524b-4be3-84d3-0b38682c9f01",
+      "name": "Aguardar o PDF processar",
+      "webhookId": "b1d3649d-227e-4777-8c68-0e27e11c395f",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        4288,
+        520
+      ],
+      "parameters": {
+        "amount": 20,
+        "unit": "seconds"
+      }
+    },
+    {
+      "id": "cdeaaadf-15d8-4ca4-99df-be018b0ef8cb",
+      "name": "Publicar carrossel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "onError": "continueErrorOutput",
+      "position": [
+        4608,
+        520
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/rest/posts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "LinkedIn-Version",
+              "value": "202609"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ author: 'urn:li:person:N3t4o9MA-J', commentary: $('Validar e limpar post').first().json.post, visibility: 'PUBLIC', distribution: { feedDistribution: 'MAIN_FEED', targetEntities: [], thirdPartyDistributionChannels: [] }, content: { media: { title: $('Validar e limpar post').first().json.titulo, id: $('Montar PDF do carrossel').first().json.document } }, lifecycleState: 'PUBLISHED', isReshareDisabledByAuthor: false }) }}"
+      },
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "r8Oa4ik7ZPuWpRfG",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "id": "2e305ce3-87a9-429c-8bed-c664da14d1a0",
+      "name": "Publicar enquete",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "onError": "continueErrorOutput",
+      "position": [
+        4608,
+        720
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/rest/posts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "linkedInOAuth2Api",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "LinkedIn-Version",
+              "value": "202609"
+            },
+            {
+              "name": "X-Restli-Protocol-Version",
+              "value": "2.0.0"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ author: 'urn:li:person:N3t4o9MA-J', commentary: $('Validar e limpar post').first().json.post, visibility: 'PUBLIC', distribution: { feedDistribution: 'MAIN_FEED', targetEntities: [], thirdPartyDistributionChannels: [] }, content: { poll: { question: $('Validar e limpar post').first().json.enquete.pergunta, options: $('Validar e limpar post').first().json.enquete.opcoes.map(o => ({ text: o })), settings: { duration: 'SEVEN_DAYS' } } }, lifecycleState: 'PUBLISHED', isReshareDisabledByAuthor: false }) }}"
+      },
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "r8Oa4ik7ZPuWpRfG",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "id": "0bd26f89-3730-47e2-9f03-3d95909e1257",
+      "name": "Escrever post com IA (reserva)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "position": [
+        2848,
+        520
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($('Montar pedido da IA').first().json.corpoGemini) }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HJOmcIcIQY0yh3jU",
+          "name": "Gemini API Key"
+        }
       }
     }
   ],
@@ -439,7 +881,7 @@
       "main": [
         [
           {
-            "node": "Montar pedido da IA",
+            "node": "Buscar README do projeto",
             "type": "main",
             "index": 0
           }
@@ -465,6 +907,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Escrever post com IA (reserva)",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -472,7 +921,7 @@
       "main": [
         [
           {
-            "node": "Buscar fotos do tema",
+            "node": "É post com foto?",
             "type": "main",
             "index": 0
           }
@@ -545,11 +994,221 @@
         ]
       ]
     },
-    "Agenda 09h": {
+    "Agenda 08h": {
+      "main": [
+        [
+          {
+            "node": "Esperar horário sorteado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar horário sorteado": {
+      "main": [
+        [
+          {
+            "node": "Buscar projetos no GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar projetos no GitHub": {
       "main": [
         [
           {
             "node": "Buscar temas já publicados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar README do projeto": {
+      "main": [
+        [
+          {
+            "node": "Montar pedido da IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É post com foto?": {
+      "main": [
+        [
+          {
+            "node": "Buscar fotos do tema",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "É carrossel?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar só texto": {
+      "main": [
+        [
+          {
+            "node": "Guardar no histórico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escrever post com IA (reserva)": {
+      "main": [
+        [
+          {
+            "node": "Validar e limpar post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É carrossel?": {
+      "main": [
+        [
+          {
+            "node": "Iniciar envio do PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "É enquete?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É enquete?": {
+      "main": [
+        [
+          {
+            "node": "Publicar enquete",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Publicar só texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Iniciar envio do PDF": {
+      "main": [
+        [
+          {
+            "node": "Montar PDF do carrossel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Publicar só texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar PDF do carrossel": {
+      "main": [
+        [
+          {
+            "node": "Enviar PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Publicar só texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar PDF": {
+      "main": [
+        [
+          {
+            "node": "Aguardar o PDF processar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Publicar só texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aguardar o PDF processar": {
+      "main": [
+        [
+          {
+            "node": "Publicar carrossel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar carrossel": {
+      "main": [
+        [
+          {
+            "node": "Guardar no histórico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Publicar só texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar enquete": {
+      "main": [
+        [
+          {
+            "node": "Guardar no histórico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Publicar só texto",
             "type": "main",
             "index": 0
           }
@@ -562,7 +1221,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "6a7d4d45-2ce5-40bd-ab12-863dd31ba36c",
+  "versionId": "ac006904-c545-4925-aacd-74b74a12362d",
   "meta": {
     "templateCredsSetupCompleted": true
   },
